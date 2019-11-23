@@ -78,7 +78,7 @@ print(f'STRETCH GOAL: list out cities that are within coordinates')
 
 prompt = "Enter 2 pairs of latitude & longitude separated by commas\n"
 prompt += "The pairs should be diagonal coordinates in the format below:\n"
-prompt += "\t    lat1, long2, lat2, long2 "
+prompt += "\t    lat1, long1, lat2, long2 "
 prompt += "\n\t example: 32, -120, 45, -100\n enter values: "
 
 user_input = (input(prompt))
