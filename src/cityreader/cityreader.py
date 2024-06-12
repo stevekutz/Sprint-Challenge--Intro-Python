@@ -1,5 +1,12 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
+import csv
+
+class City():
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
 
 
 # We have a collection of US cities with population over 750,000 stored in the
@@ -16,18 +23,26 @@
 # should not be loaded into a City object.
 cities = []
 
+# REMEMBER to add relative path !!!!
+path_name = 'src/cityreader/cities.csv'
+
 def cityreader(cities=[]):
   # TODO Implement the functionality to read from the 'cities.csv' file
   # For each city record, create a new City instance and add it to the 
   # `cities` list
-    
-    return cities
+  with open(path_name, 'r', newline = '') as csv_file:
+    read_file = csv.DictReader(csv_file)
+    for row in read_file:
+          city = City(row['city'], float(row['lat']), float(row['lng']))
+          cities.append(city)
+
+  return cities
 
 cityreader(cities)
 
 # Print the list of cities (name, lat, lon), 1 record per line.
 for c in cities:
-    print(c)
+    print(c.name, c.lat, c.lon)
 
 # STRETCH GOAL!
 #
@@ -59,13 +74,62 @@ for c in cities:
 # Salt Lake City: (40.7774,-111.9301)
 
 # TODO Get latitude and longitude values from the user
+print(f'STRETCH GOAL: list out cities that are within coordinates')
 
+prompt = "Enter 2 pairs of latitude & longitude separated by commas\n"
+prompt += "The pairs should be diagonal coordinates in the format below:\n"
+prompt += "\t    lat1, long1, lat2, long2 "
+prompt += "\n\t example: 32, -120, 45, -100\n enter values: "
+
+user_input = (input(prompt))
+
+coordinate_pairs = user_input.split(",")
+
+# can't do this
+#def cityreader_stretch(lat1 = float(lat1), lon1 = float(lat2), lat2 = float(lat2), lon2 = float(lon2), cities=[]):
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
   within = []
 
-  # TODO Ensure that the lat and lon valuse are all floats
+  lat1 = float(lat1)
+  lat2 = float(lat2)
+  lon1 = float(lon1)
+  lon2 = float(lon2)
+
+  lat_pair = []
+  lon_pair = []
+
+
+  if(lat1 < lat2):
+    lat_pair = [lat2, lat1]
+  else:
+    lat_pair = [lat1, lat2]
+
+  if(lon1 < lon2):
+    lon_pair = [lon2, lon1]
+  else:
+    lon_pair = [lon1, lon2]    
+
+  print(f' lat_pair -> {lat_pair}\n')
+  print(f' lon_pair -> {lon_pair}\n')
+
+  # TODO Ensure that the lat and lon values are all floats            # fixed typo
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
 
-  return within
+  within = [city for city in cities if city.lat < lat_pair[0] and city.lat > lat_pair[1] and city.lon < lon_pair[0] and city.lon > lon_pair[1]]
+
+  if(len(within) >=1):
+    return within
+  else:
+    print(f'There are no cities within these diagonal coordinates')  
+
+
+cities_result = cityreader_stretch(*coordinate_pairs, cities)
+
+if(cities_result != None):
+  for city in cities_result:
+    print(city.name, city.lat, city.lon)
+
+
+# 45, -100, 32, -120
